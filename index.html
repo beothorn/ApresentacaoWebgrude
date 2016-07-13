@@ -7,7 +7,7 @@
 		<title>reveal.js</title>
 
 		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/black.css">
+		<link rel="stylesheet" href="css/theme/moon.css">
 
 		<!-- Theme used for syntax highlighting of code -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
@@ -24,8 +24,127 @@
 	<body>
 		<div class="reveal">
 			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
+				<section>
+					<h1>Web scraping com Webgrude</h1>
+					<p>
+						<small>Lucas Santos</small>
+					</p>
+				</section>
+				<section>
+					<h2>Web scraping</h2>
+					<p>O que é?</p>
+					<p>Pra que serve?</p>
+				</section>
+				<section>
+					<h2>Scraping via software</h2>
+					<div style="height:20px"></div>
+					<div style="width:50%;float:left">
+						<h3> Bibliotecas tradicionais</h3>
+						<ul>
+							<li>Imperativa</li>
+							<li>Tipagem fraca</li>
+						</ul>
+					</div>
+					<div style="width:50%;float:right">
+						<h3>Webgrude</h3>
+						<ul>
+							<li>Declarativa</li>
+							<li>Classe reflete o site</li>
+						</ul>
+					</div>
+				</section>
+				<section>
+					<h3>Quando usar</h3>
+					<ul>
+						<li>Página renderizada no servidor</li>
+						<li>Estrutura determinística</li>
+					</ul>
+				</section>
+				<section>
+					<h1>Hackaday</h1>
+				</section>
+				<section>
+					<h3>Hackaday Post Titles</h3>
+					<pre><code class="java" data-trim>
+@Page("http://hackaday.com/blog/") public class Hackaday {
+    @Selector(".entry-title") List&lt;String&gt; postTitles;
+    public static void main(String[] args) {
+        Browser
+            .get(Hackaday.class)
+            .postTitles
+            .forEach(System.out::println);
+    }
+}
+					</code></pre>
+				</section>
+				<section>
+					<h3>Hackaday Posts</h3>
+					<pre><code class="java" data-trim>
+@Page("http://hackaday.com/blog/") public class Hackaday {
+    @Selector("article") static class Post{
+        @Selector(".entry-title") String title;
+        @Selector(".entry-date") String date;
+    }
+    List&lt;Post&gt; posts;
+    public static void main(String[] args) {
+        Browser
+            .get(Hackaday.class)
+            .posts
+            .forEach(p ->  System.out.println(p.title+" : "+p.date));
+    }
+}
+					</code></pre>
+				</section>
+				<section>
+					<h3>Hackaday Posts</h3>
+					<pre><code class="java" data-trim>
+@Page("http://hackaday.com/blog/") public class HackadayPage {
+    @Selector("article") static class Post{
+        @Selector(".entry-title") String title;
+        @Selector(".entry-date") String date;
+        public String toString() {return this.title+" : "+this.date;};
+    }
+    List&lt;Post&gt; posts;
+    @Selector(".nav-previous a") public Link&lt;HackadayPage&gt; older;
+    public static void main(String[] args) {
+        HackadayPage first = Browser.get(HackadayPage.class);
+        print(first);
+        print(first.older.visit());
+    }
+    private static void print(HackadayPage page) {
+        page.posts.forEach(System.out::println);
+    }
+}
+					</code></pre>
+				</section>
+				<section>
+					<h3>Tipos suportados</h3>
+					<ul>
+						<li>String (texto ou html)</li>
+						<li>int</li>
+						<li>float</li>
+						<li>boolean</li>
+						<li>List (tipo suportado ou classe com selector)</li>
+						<li>Link</li>
+						<li>org.jsoup.nodes.Element</li>
+					</ul>
+				</section>
+				<section>
+					<h3>Github</h3>
+					<p>
+						<a href="https://github.com/beothorn/webGrude">https://github.com/beothorn/webGrude</a>
+					</p>
+					<h3>Maven</h3>
+					<p>
+						<pre><code class="hljs" data-trim>
+&lt;dependency&gt;
+  &lt;groupId&gt;com.github.beothorn&lt;/groupId&gt;
+  &lt;artifactId&gt;webGrude&lt;/artifactId&gt;
+  &lt;version&gt;1.0.3&lt;/version&gt;
+&lt;/dependency&gt;
+					</code></pre>
+					</p>
+				</section>
 			</div>
 		</div>
 
